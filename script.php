@@ -1,8 +1,8 @@
 <?php
 $host = 'localhost';
 $dbname = 'dbToDo';
-$user = 'root';
-$pass = 'root';
+$user = 'user';
+$pass = 'pwd';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
@@ -22,10 +22,26 @@ try {
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     header('Content-Type: application/json');
     echo json_encode($data);
+
 } catch (PDOException $e) {
     header('Content-Type: application/json');
     echo json_encode(['error' => 'Erreur lors de la récupération des événements : ' . $e->getMessage()]);
 }
+
+
+// try {
+//     $stmt = $pdo->prepare("
+//         INSERT INTO event (title, description, status) VALUES ('Nouvel événement', 'Description de l\'événement', 'A faire')
+//     ");
+//     $stmt->execute();
+//     $insertion = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//     header('Content-Type: application/json');
+//     echo json_encode($insertion);
+
+// } catch (PDOException $e) {
+//     header('Content-Type: application/json');
+//     echo json_encode(['error' => 'Erreur lors de la récupération des événements : ' . $e->getMessage()]);
+// }
 
 
 ?>
