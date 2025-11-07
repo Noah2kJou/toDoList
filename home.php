@@ -15,6 +15,11 @@
             <div id="content-header" class="content-header">
                 <form action="script.php" method="GET">
                     <input type="text" id="new-event-title" name="new-event-title" placeholder="Titre de l'événement" required>
+
+                    <label for="set-time-limit">Définir une limite de temps</label>
+                    <input type="checkbox" id="set-time-limit" name="set-time-limit">
+
+                    <input type="datetime-local" id="new-event-date" name="new-event-date">
                     <button type="submit" id="add-event-button" class="add-event-button">+ Ajouter un événement</button>
                 </form>
             </div>

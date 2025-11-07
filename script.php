@@ -29,19 +29,40 @@ try {
 }
 
 
-// try {
-//     $stmt = $pdo->prepare("
-//         INSERT INTO event (title, description, status) VALUES ('Nouvel événement', 'Description de l\'événement', 'A faire')
-//     ");
-//     $stmt->execute();
-//     $insertion = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//     header('Content-Type: application/json');
-//     echo json_encode($insertion);
+if (isset($_GET['new-event-title'])) {
+    //$data = $_GET['new-event-title']; // ex: '2025-10'
+    if ($_GET['set-time-limit']) {
+        $currentDate = date('Y-m-d H:i:s');
+        try {
+            $stmt = $pdo->prepare("
+                INSERT INTO event (description, status, date_creation, date_fin) VALUES (:description, 'aFaire', :date_creation, :date_fin)
+            ");
+            $stmt->bindParam(':description', $_GET['new-event-title']);
+            $stmt->bindParam(':date_creation', $currentDate);
+            $stmt->bindParam(':date_fin', $_GET['new-event-date']);
+            $stmt->execute();
+            header('Location: http://localhost/toDoList/home.php');
+        } catch (PDOException $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Erreur lors de la récupération des événements : ' . $e->getMessage()]);
+        }
+    } else {
+        $currentDate = date('Y-m-d H:i:s');
+        try {
+            $stmt = $pdo->prepare("
+                INSERT INTO event (description, status, date_creation, date_fin) VALUES (:description, 'aFaire', :date_creation, NULL)
+            ");
+            $stmt->bindParam(':description', $_GET['new-event-title']);
+            $stmt->bindParam(':date_creation', $currentDate);
+            $stmt->execute();
+            header('Location: http://localhost/toDoList/home.php');
+        } catch (PDOException $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Erreur lors de la récupération des événements : ' . $e->getMessage()]);
+        }
+    }
+}
 
-// } catch (PDOException $e) {
-//     header('Content-Type: application/json');
-//     echo json_encode(['error' => 'Erreur lors de la récupération des événements : ' . $e->getMessage()]);
-// }
 
 
 ?>
