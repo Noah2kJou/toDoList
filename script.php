@@ -14,19 +14,6 @@ try {
 }
 
 
-try {
-    $stmt = $pdo->prepare("
-        SELECT * FROM event
-    ");
-    $stmt->execute();
-    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    header('Content-Type: application/json');
-    echo json_encode($data);
-
-} catch (PDOException $e) {
-    header('Content-Type: application/json');
-    echo json_encode(['error' => 'Erreur lors de la récupération des événements : ' . $e->getMessage()]);
-}
 
 
 if (isset($_GET['new-event-title'])) {
@@ -44,7 +31,7 @@ if (isset($_GET['new-event-title'])) {
             header('Location: http://localhost/toDoList/home.php');
         } catch (PDOException $e) {
             header('Content-Type: application/json');
-            echo json_encode(['error' => 'Erreur lors de la récupération des événements : ' . $e->getMessage()]);
+            echo json_encode(['error' => 'Erreur lors de l insertion de événement : ' . $e->getMessage()]);
         }
     } else {
         $currentDate = date('Y-m-d H:i:s');
@@ -58,9 +45,51 @@ if (isset($_GET['new-event-title'])) {
             header('Location: http://localhost/toDoList/home.php');
         } catch (PDOException $e) {
             header('Content-Type: application/json');
-            echo json_encode(['error' => 'Erreur lors de la récupération des événements : ' . $e->getMessage()]);
+            echo json_encode(['error' => 'Erreur lors de l insertion de événement : ' . $e->getMessage()]);
         }
     }
+}
+
+
+if (isset($_GET['taskStatus'], $_GET['taskId'])) {
+    try {
+        $status = (string) $_GET['taskStatus'];
+        $id = $_GET['taskId'];
+
+        $stmt = $pdo->prepare('
+            UPDATE event
+            SET status = :status
+            WHERE id = :id
+        ');
+        
+        $stmt->bindValue(':status', $status);
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true]);
+        header('Location: http://localhost/toDoList/home.php');
+        exit;
+    } catch (PDOException $e) {
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Erreur lors de la mise à jour du statut : ' . $e->getMessage()]);
+        exit;
+    }
+}
+
+
+try {
+    $stmt = $pdo->prepare("
+        SELECT * FROM event
+    ");
+    $stmt->execute();
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+
+} catch (PDOException $e) {
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'Erreur lors de la récupération des événements : ' . $e->getMessage()]);
 }
 
 
