@@ -47,5 +47,25 @@
                 </div>
             </div>
         </div>
+        <div id="settings-modal" class="settings-modal">
+            <button id="update-event" class="update-event">Modifier</button>
+            <button id="delete-event" class="delete-event">Supprimer</button>
+        </div>
+        <div id="update-modal" class="update-modal" style="display: none;">
+            <form id="update-form" class="update-form" action="script.php" method="GET">
+                <label for="update-event-title">Modifier le titre de l'événement :</label>
+                <input type="text" id="update-event-title" name="update-event-title" required>
+                
+                <label for="update-set-time-limit">Définir une limite de temps</label>
+                <input type="checkbox" id="update-set-time-limit" name="update-set-time-limit">
+
+                <input type="datetime-local" id="update-event-date" name="update-event-date">
+
+                <input type="hidden" id="update-event-id" name="update-event-id">
+
+                <button type="submit" id="submit-update-button" class="submit-update-button">Enregistrer les modifications</button>
+            </form>
+        </div>
+
     </main>
 </body>

@@ -1,55 +1,277 @@
-.main-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    border: 1px solid #000;
-    width: 85%;
-    margin: auto;
+/* Nouveau style moderne et clean pour la To-Do List */
 
-    & > .content-header {
-        border-bottom: 1px solid #ccc;        
-        width: auto;
-    }
-
-    & > .content-body {
-        background-color: #f0f0f0;
-        border: #ccc;
-        flex-grow: 1;
-        margin: 10px;
-        width: 95%;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: 10px;
-
-
-        & > .a-faire-column, .en-cours-column, .termine-column {
-            background-color: #fff;
-            border: 1px solid #000;
-            padding: 10px;
-            /* height: fit-content; */
-
-            & > .event-a-faire-container div, .event-en-cours-container div, .event-termine-container div {
-                background-color: #ccc;
-                border: 1px solid #000;
-                padding: 10px;
-                height: fit-content;
-                margin-bottom: 5px;
-            }
-        }
-    }
+:root {
+  --bg: #f5f7fa;
+  --card-bg: #ffffff;
+  --border: #d0d4da;
+  --text: #333;
+  --accent: #6c5ce7;
+  --accent-light: #a29bfe;
+  --radius: 14px;
+  --shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: "Inter", sans-serif;
+  color: var(--text);
+}
+
+header {
+  width: 100%;
+  text-align: center;
+  padding: 25px 0;
+  background: var(--accent);
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  box-shadow: var(--shadow);
+}
+
+.main-container {
+  width: 90%;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.content-header form {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.content-header input[type="text"],
+.content-header input[type="datetime-local"] {
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  outline: none;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.content-header input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+.add-event-button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.add-event-button:hover {
+  background: var(--accent-light);
+}
+
+.content-body {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+.content-body > div {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 15px;
+  box-shadow: var(--shadow);
+}
+
+.content-body h2 {
+  text-align: center;
+  margin-top: 0;
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: var(--accent);
+}
+
+.content-body span {
+  display: block;
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 15px;
+}
+
+.event-item {
+  background: #eef0f5;
+  border-radius: var(--radius);
+  padding: 12px;
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+  cursor: grab;
+  transition: 0.2s;
+  padding-top: inherit;
+}
+
+.event-item:hover {
+  background: #e3e5ec;
+}
+
+.dragging {
+  opacity: 0.4;
+}
 
 .dropzone {
-  background: blueviolet;
-  /* margin: 10px;
-  padding: 10px; */
+  border: 2px dashed var(--accent);
+  background: var(--accent-light);
 }
 
-.dropzone.dragover {
-  background-color: purple;
+
+@media (max-width: 900px) {
+  .content-body {
+    grid-template-columns: 1fr;
+  }
 }
-.dragging {
-  opacity: 0.5;
+
+
+.settings-modal {
+  position: fixed;
+  /* top: 50%; */
+  /* left: 50%; */
+  transform: translate(-50%, -50%);
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  width: 160px;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1000;
+}
+
+
+.settings-modal button {
+  border: none;
+  padding: 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+  background: var(--accent);
+  color: white;
+}
+
+
+.settings-modal #delete-event {
+  background: #ffdddd;
+  color: #d60000;
+}
+
+/* Update modal */
+.update-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  width: 420px;
+  max-width: calc(100% - 40px);
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 18px;
+  border-radius: calc(var(--radius) - 4px);
+  box-shadow: var(--shadow);
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1100;
+  animation: modalFade 180ms ease-out;
+}
+
+/* Visible state (toggle this class to show) */
+.update-modal.open {
+  display: flex;
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+  .update-modal {
+    width: 96%;
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .update-modal .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .update-modal .btn {
+    width: 100%;
+  }
+}
+
+
+/* Form inside modal */
+.update-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.update-modal label {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.update-modal input[type="text"],
+.update-modal input[type="datetime-local"],
+.update-modal textarea,
+.update-modal select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: calc(var(--radius) - 6px);
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 13px;
+  outline: none;
+  transition: 0.16s;
+  box-sizing: border-box;
+}
+
+.update-modal textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.update-modal input:focus,
+.update-modal textarea:focus,
+.update-modal select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.08);
+}
+
+/* Accessibility: announce hidden/inert state */
+.update-modal[aria-hidden="true"] {
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.98);
+}
+
+/* Simple appear animation */
+@keyframes modalFade {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }

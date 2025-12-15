@@ -6,13 +6,17 @@ function fetchEvents () {
             //console.log(item);
             
             const eventDiv = document.createElement('div');
+            if (item.date_fin === null) {item.date_fin = ''};
 
             eventDiv.classList.add('event-item');
             eventDiv.setAttribute('draggable', 'true');
             eventDiv.innerHTML = `
                 <span style='display: none'>${item.id}</span>
-                <p><strong>description : ${item.description}</strong></p>
-                <p>date limite : ${item.date_fin}</p>
+                <div style='display: flex; justify-content: space-between; align-items: center;'>
+                    <p><strong>${item.description}</strong></p>
+                    <button class='settings-button' name='settings-button' data-task-id='${item.id}' style='font-size: 22px; cursor: pointer;'>⚙</button>
+                </div>
+                <p>${item.date_fin}</p>
             `;
 
             // filtrage selon le statut et insertion dans le conteneur approprié
@@ -109,4 +113,63 @@ test.forEach(element => {
         //$("#content-body").load("script.php");
     });
 });
+
+
+// ouvrir button settings
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.settings-button');
+    if (!btn) return;
+
+    const taskId = btn.dataset.taskId ?? btn.closest('.event-item')?.querySelector('span')?.textContent?.trim() ?? '';
+    console.log('settings clicked', { taskId, button: btn });
+
+    const modal = document.getElementById("settings-modal");
+    const rect = btn.getBoundingClientRect();
+
+    // gérer positionnement modale
+    const offsetX = -35;
+    const offsetY = 80;
+
+    modal.style.position = 'absolute'; // ou 'fixed' selon ton besoin
+    modal.style.top  = (rect.bottom + window.scrollY + offsetY) + "px";
+    modal.style.left = (rect.left   + window.scrollX + offsetX) + "px";
+    modal.style.display = "flex";
+
+
+    // configurer bouton suppression
+    const deleteBtn = document.getElementById("delete-event");
+    deleteBtn.onclick = function() {
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.action = '/toDoList/script.php';
+
+        form.innerHTML = `
+            <input type="hidden" name="deleteTaskId" value="${taskId}">
+        `;
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    const updateBtn = document.getElementById("update-event");
+    updateBtn.onclick = function() {
+        const updateModal = document.getElementById("update-modal");
+        updateModal.style.display = "flex";
+
+        const updateForm = document.getElementById("update-form");
+        updateForm.elements["update-task-id"].value = taskId;
+    }
+
+});
+
+
+// fermer modale au clic en dehors
+window.addEventListener('click', function(e) {
+    const modal = document.getElementById("settings-modal");
+    if (e.target.closest('.settings-button') || e.target.closest('#settings-modal')) {
+        return;
+    }
+    modal.style.display = "none";
+});
+
 

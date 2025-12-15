@@ -78,6 +78,48 @@ if (isset($_GET['taskStatus'], $_GET['taskId'])) {
 }
 
 
+// Delete event
+if (isset($_GET['deleteTaskId'])) {
+    try {
+        $id = $_GET['deleteTaskId'];
+
+        $stmt = $pdo->prepare('
+            DELETE FROM event
+            WHERE id = :id
+        ');
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        header('Location: http://localhost/toDoList/home.php');
+        exit;;
+    } catch (PDOException $e) {
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Erreur lors de la suppression de l événement : ' . $e->getMessage()]);
+        exit;
+    }
+}
+
+// Update event
+// if (isset($_GET['updateTaskId'])) {
+//     try {
+//         $id = $_GET['updateTaskId'];
+
+//         $stmt = $pdo->prepare('
+//             UPDATE event
+//             SET description = :description
+//             WHERE id = :id
+//         ');
+//         $stmt->bindValue(':id', $id);
+//         $stmt->execute();
+//         header('Location: http://localhost/toDoList/home.php');
+//         exit;;
+//     } catch (PDOException $e) {
+//         header('Content-Type: application/json');
+//         echo json_encode(['error' => 'Erreur lors de la modification de l événement : ' . $e->getMessage()]);
+//         exit;
+//     }
+// }
+
+
 try {
     $stmt = $pdo->prepare("
         SELECT * FROM event
