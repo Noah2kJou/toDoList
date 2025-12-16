@@ -36,7 +36,7 @@ header {
   padding: 20px;
   border-radius: var(--radius);
   background: var(--card-bg);
-  box-shadow: var(--shadow);
+  /* box-shadow: var(--shadow); */
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -255,6 +255,18 @@ header {
 .update-modal select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.08);
+}
+
+.submit-update-button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: calc(var(--radius) - 6px);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: 0.2s;
 }
 
 /* Accessibility: announce hidden/inert state */

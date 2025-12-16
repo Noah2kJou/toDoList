@@ -90,7 +90,7 @@ if (isset($_GET['deleteTaskId'])) {
         $stmt->bindValue(':id', $id);
         $stmt->execute();
         header('Location: http://localhost/toDoList/home.php');
-        exit;;
+        exit;
     } catch (PDOException $e) {
         header('Content-Type: application/json');
         echo json_encode(['error' => 'Erreur lors de la suppression de l événement : ' . $e->getMessage()]);
@@ -98,26 +98,33 @@ if (isset($_GET['deleteTaskId'])) {
     }
 }
 
-// Update event
-// if (isset($_GET['updateTaskId'])) {
-//     try {
-//         $id = $_GET['updateTaskId'];
 
-//         $stmt = $pdo->prepare('
-//             UPDATE event
-//             SET description = :description
-//             WHERE id = :id
-//         ');
-//         $stmt->bindValue(':id', $id);
-//         $stmt->execute();
-//         header('Location: http://localhost/toDoList/home.php');
-//         exit;;
-//     } catch (PDOException $e) {
-//         header('Content-Type: application/json');
-//         echo json_encode(['error' => 'Erreur lors de la modification de l événement : ' . $e->getMessage()]);
-//         exit;
-//     }
-// }
+// Update event
+if (isset($_GET['update-event-id'])) {
+    try {
+        $id = $_GET['update-event-id'];
+        $date = $_GET['update-event-date'];
+        $description = $_GET['update-event-title'];
+
+        $stmt = $pdo->prepare('
+            UPDATE event
+            SET description = :description, date_fin = :date_fin
+            WHERE id = :id
+        ');
+
+        $stmt->bindValue(':id', $id);
+        $stmt->bindValue(':description', $description);
+        $stmt->bindValue(':date_fin', $date);
+
+        $stmt->execute();
+        header('Location: http://localhost/toDoList/home.php');
+        exit;
+    } catch (PDOException $e) {
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Erreur lors de la modification de l événement : ' . $e->getMessage()]);
+        exit;
+    }
+}
 
 
 try {

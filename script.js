@@ -115,13 +115,19 @@ test.forEach(element => {
 });
 
 
+
 // ouvrir button settings
 document.addEventListener('click', function(e) {
     const btn = e.target.closest('.settings-button');
     if (!btn) return;
 
+    // obtenir id de l'event
     const taskId = btn.dataset.taskId ?? btn.closest('.event-item')?.querySelector('span')?.textContent?.trim() ?? '';
-    console.log('settings clicked', { taskId, button: btn });
+    // obtenir date de l'event
+    const taskDate = btn.closest('.event-item')?.querySelectorAll('p')[1]?.textContent?.trim() ?? '';
+    // obtenir description de l'event
+    const taskDescription = btn.closest('.event-item')?.querySelectorAll('p')[0]?.textContent?.trim() ?? '';
+    console.log('settings clicked', { taskId, button: btn, taskDate, taskDescription });
 
     const modal = document.getElementById("settings-modal");
     const rect = btn.getBoundingClientRect();
@@ -139,6 +145,12 @@ document.addEventListener('click', function(e) {
     // configurer bouton suppression
     const deleteBtn = document.getElementById("delete-event");
     deleteBtn.onclick = function() {
+        // validation avant suppression
+        const confirmDelete = confirm("Êtes-vous sûr de vouloir supprimer cette tâche ?");
+        if (!confirmDelete) {
+            return;
+        }
+        
         const form = document.createElement('form');
         form.method = 'GET';
         form.action = '/toDoList/script.php';
@@ -151,15 +163,17 @@ document.addEventListener('click', function(e) {
         form.submit();
     }
 
+    // configurer bouton mise à jour
     const updateBtn = document.getElementById("update-event");
     updateBtn.onclick = function() {
         const updateModal = document.getElementById("update-modal");
         updateModal.style.display = "flex";
 
         const updateForm = document.getElementById("update-form");
-        updateForm.elements["update-task-id"].value = taskId;
+        updateForm.elements["update-event-id"].value = taskId;
+        updateForm.elements["update-event-title"].value = taskDescription;
+        updateForm.elements["update-event-date"].value = taskDate;
     }
-
 });
 
 
@@ -172,4 +186,35 @@ window.addEventListener('click', function(e) {
     modal.style.display = "none";
 });
 
+//fermer modale lorsque echap est pressée
+window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const settingsModal = document.getElementById("settings-modal");
+        settingsModal.style.display = "none";
 
+        const updateModal = document.getElementById("update-modal");
+        updateModal.style.display = "none";
+    }
+});
+
+
+// fermer modale update au clic sur croix
+const closeUpdateModalBtn = document.getElementById('update-modal-close');
+closeUpdateModalBtn.addEventListener('click', function() {
+    const updateModal = document.getElementById("update-modal");
+    updateModal.style.display = "none";
+}); 
+
+const checkboxDateForm = document.getElementById('update-set-time-limit');
+checkboxDateForm.addEventListener('change', function() {
+    const dateInput = document.getElementById('update-event-date');
+    if (this.checked) {
+        dateInput.disabled = true;
+        dateInput.style.backgroundColor = '#e0e0e0';
+        console.log('checkbox checked');
+    } else {
+        dateInput.disabled = false;
+        dateInput.style.backgroundColor = '';
+        console.log('checkbox unchecked');
+    }
+});
